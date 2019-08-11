@@ -1,4 +1,5 @@
 class CustomFieldLookup < CustomField
+  attr_accessor :current_user
 
   Settings = %w(lookup_class_name lookup_field lookup_method autocomplete multiselect)
   LIMIT = 50 # autocomplete
@@ -29,7 +30,12 @@ class CustomFieldLookup < CustomField
       klass.lookup_values(value)
     else
       # assume it's an ActiveRecord object that has Ransack on it
-      items = klass.my
+      if current_user
+        #TODO: this seems like a security hole.
+        items = klass.my(current_user)
+      else
+        items = klass
+      end
       items = items.limit(LIMIT) if autocomplete?
       items = items.search("#{lookup_field}_in" => value) # value can be array or string
       items.result

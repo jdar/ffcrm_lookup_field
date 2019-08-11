@@ -16,10 +16,12 @@
 #------------------------------------------------------------------------------
 
 class LookupInput < SimpleForm::Inputs::CollectionSelectInput
+  attr_accessor :current_user
 
   # Use chosen to render a lookup widget
   #------------------------------------------------------------------------------
-  def input
+  def input(wrapper_options={current_user: nil})
+    @current_user = wrapper_options[:current_user]
     add_placeholder!
     add_autocomplete!
     add_multiselect!
@@ -61,7 +63,13 @@ class LookupInput < SimpleForm::Inputs::CollectionSelectInput
   end
 
   def cf
-    @cf ||= CustomFieldLookup.find_by_name(attribute_name)
+    @cf ||= begin
+      cf = CustomFieldLookup.where(name: attribute_name).first
+      if cf
+        cf.current_user = current_user
+      end
+      cf
+    end
   end
 
   def lookup_values_for_text_field
