@@ -5,6 +5,9 @@
 #------------------------------------------------------------------------------
 FactoryGirl.define do
   factory :tag do
-    name { Faker::Internet.user_name }
+    name { 
+#faker is buggy. https://github.com/faker-ruby/faker/issues/278
+      "Faker::Internet.user_name"
+    }
   end
 end

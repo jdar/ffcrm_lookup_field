@@ -76,7 +76,11 @@ class CustomFieldLookup < CustomField
 
       #
       # For lookup fields that are multiselect, turn on ActiveRecord serialization on the object class
-      if !klass.serialized_attributes.keys.include?(self.name)
+      serialized_attributes = klass.columns.select { |t| klass.type_for_attribute(t.name).is_a?(::ActiveRecord::Type::Serialized) }.inject({}){ |acc,c|
+        acc.merge c.name => klass.type_for_attribute(c.name).coder
+      }
+
+      if !serialized_attributes.keys.include?(self.name)
         klass.serialize(self.name.to_sym, Array)
         Rails.logger.debug("FfcrmLookupField: Serializing #{self.name} as Array for #{klass}.")
       end

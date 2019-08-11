@@ -43,12 +43,14 @@ module Dummy
     # like if you have constraints or database-specific column types
     # config.active_record.schema_format = :sql
 
-    # Enforce whitelist mode for mass assignment.
-    # This will create an empty whitelist of attributes available for mass-assignment for all models
-    # in your app. As such, your models will need to explicitly whitelist or blacklist accessible
-    # parameters by using an attr_accessible or attr_protected declaration.
-    config.active_record.whitelist_attributes = false
 
+    # Version of your assets, change this if you want to expire all your assets
+    config.assets.version = '1.0'
+    if ENV['testingtesting']
+    config.secret_key = 'e0fa133216a38c9bf77d8d95a205c46c21fd604c81b4f84b04c4588c19a590d5003bfd89fc9f957b337d7eb02d98fe6cbff919cd9636f43330fa6dec6de55645'
+    Devise.secret_key = 'e0fa133216a38c9bf77d8d95a205c46c21fd604c81b4f84b04c4588c19a590d5003bfd89fc9f957b337d7eb02d98fe6cbff919cd9636f43330fa6dec6de55645'
+    end
+    
     # Enable the asset pipeline
     config.assets.enabled = true
 

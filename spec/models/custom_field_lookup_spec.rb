@@ -9,9 +9,15 @@ describe CustomFieldLookup do
     before      { allow(field).to receive(:multiselect?).and_return(true) }
 
     it "should serialize multiple choice lookup fields" do
-      expect(klass.serialized_attributes).not_to include(field.name)
+      serialized_attributes = klass.columns.select { |t| klass.type_for_attribute(t.name).is_a?(::ActiveRecord::Type::Serialized) }.inject({}){ |acc,c|
+        acc.merge c.name => klass.type_for_attribute(c.name).coder
+      }
+      expect(serialized_attributes).not_to include(field.name)
       field.apply_serialization
-      expect(klass.serialized_attributes).to include(field.name)
+      serialized_attributes_after = klass.columns.select { |t| klass.type_for_attribute(t.name).is_a?(::ActiveRecord::Type::Serialized) }.inject({}){ |acc,c|
+        acc.merge c.name => klass.type_for_attribute(c.name).coder
+      }
+      expect(serialized_attributes_after).to include(field.name)
     end
 
     it "should override the default mutator for multiple choice lookup fields" do

@@ -11,7 +11,8 @@ FactoryGirl.define do
   sequence(:field_position) {|x| x }
 
   sequence :field_label do |x|
-    Faker::Internet.user_name + x.to_s
+    #faker is buggy. https://github.com/faker-ruby/faker/issues/278
+    "Faker::Internet.user_name" + x.to_s
   end
 
   factory :field_group do
